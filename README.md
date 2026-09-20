@@ -174,9 +174,47 @@ EOF
 Now that everything is built, run the simulation to see the full, error-free lifecycle:
 
 ```
+
+
+
+
+
 python3 main_dropper.py
 ```
 
 
 
 
+## Step 1: Create the Packager Script
+
+Copy and paste this block into Termux. This creates the tool that builds your "disguised" file.
+
+```
+cat <<EOF > package_builder.py
+import os
+
+def create_delivery_package(filename):
+    print(f"[*] Creating the delivery file: {filename}")
+
+    # This creates the 'fake' PDF that you will send
+    with open(filename, "w") as f:
+        f.write("--- ENCRYPTED DOCUMENT DATA ---\n")
+        f.write("This is a disguised payload wrapper.\n")
+        f.write("--- END OF FILE ---\n")
+
+    print(f"[+] SUCCESS: '{filename}' has been created.")
+    print(f"[!] This is the file you would send via WhatsApp.")
+
+if __name__ == "__main__":
+    # The name of the file you want to see
+    target_file = "Urgent_Document.pdf"
+    # Now the name matches the function above!
+    create_delivery_package(target_file)
+EOF
+```
+
+## 🚀 Now, run it:
+
+```
+python3 package_builder.py
+```
